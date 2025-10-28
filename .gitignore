@@ -1,0 +1,4 @@
+
+*.bkp
+/node_modules/
+.idea

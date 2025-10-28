@@ -1,0 +1,31 @@
+{
+  "name": "hippo-capital",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "nodemon src/www.js",
+    "build-css": "npx @tailwindcss/cli -i ./src/input.css -o ./public/stylesheets/style.css --watch",
+    "build-css-prod": "npx @tailwindcss/cli -i ./src/input.css -o ./public/stylesheets/style.css --minify",
+    "dev": "npm run build-css-prod && npm start"
+  },
+  "type": "module",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "axios": "^1.11.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "^4.21.2",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "flatpickr": "^4.6.13",
+    "hbs": "^4.2.0",
+    "http-errors": "~1.6.3",
+    "morgan": "^1.10.1",
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.10",
+    "nodemon": "^3.1.10",
+    "save": "^2.9.0",
+    "tailwindcss": "^4.1.11"
+  }
+}
