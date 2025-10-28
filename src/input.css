@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-custom-gold: #FFB95F;
+  --color-logo-navy: #14042C;
+  --color-logo-navy-hover: #20024d;
+}
+
+/* used in transfer card selection */
+.selected {
+  @apply bg-logo-navy border-white;
+}
+
+ Custom styles for Hippo Capital
+body {
+  margin: 0;
+  padding: 0px;
+  font-family: 'Cinzel', serif;
+  background-color: white;
+  color: #FFB95F;
+  overflow: hidden;
+}
+
+
+
