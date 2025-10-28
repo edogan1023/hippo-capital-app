@@ -1,0 +1,86 @@
+<script src="/javascripts/login.js" defer></script>
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-10 bg-logo-navy h-[100px]">
+        <div class="col-span-3">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <div class="col-span-4"></div>
+
+        <div>
+            <p class="text-center text-custom-gold col-span-2 flex justify-center-safe items-center border-2 border-custom-gold m-[30px]">Safe & Secure</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="max-w-4xl mx-auto mt-10 p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-semibold text-gray-800 mb-2">Welcome to Internet Banking</h1>
+    <p class="text-gray-700 mb-6">
+        If you don’t already use Internet Banking, it’s simple to
+        <a href="/register" class="text-logo-navy underline">register</a>.
+    </p>
+
+    <!-- Login Form -->
+    <form action="/login" method="POST" class="bg-white space-y-4">
+        <!-- User ID -->
+        <div>
+            <label for="userEmail" class="block text-sm font-semibold text-gray-800 mb-1">User Email:</label>
+            <input
+                    id="userEmail"
+                    name="userEmail"
+                    type="text"
+                    class="w-200px border border-gray-400 p-2 rounded"
+                    required
+            />
+        </div>
+
+        <!-- Password -->
+        <div>
+            <label for="password" class="block text-sm font-semibold text-gray-800 mb-1">Password:</label>
+            <div class="flex items-center">
+                <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        class="w-180px border border-gray-400 p-2 rounded"
+                        required
+                />
+                <button
+                        type="button"
+                        id="togglePassword"
+                        class="ml-2 text-logo-navy font-semibold underline text-sm"
+                >
+                    Show
+                </button>
+            </div>
+        </div>
+
+        <!-- Remember Checkbox -->
+        <div class="flex items-center space-x-2">
+            <input type="checkbox" id="remember" name="remember" class="h-4 w-4 border-gray-300 rounded">
+            <label for="remember" class="text-sm text-gray-700">Remember my User ID</label>
+            <span title="Don’t tick this box if you’re using a public or shared computer" class="text-sm text-green-700 cursor-help">ℹ️</span>
+        </div>
+
+        <!-- Warning -->
+        <p class="text-sm text-logo-navy">
+            <strong>Warning:</strong> Don’t tick this box if you’re using a public or shared computer
+        </p>
+
+        <!-- Forgotten link and button -->
+        <div class="flex items-center mt-4">
+            <a href="/forgotPassword" class="text-logo-navy font-semibold underline text-sm">Forgotten your log in details?</a>
+            <a href="/">
+                <div class="bg-white text-logo-navy flex px-6 rounded justify-center-safe items-center border-2 border-b-logo-navy ml-[50px]">Return</div>
+            </a>
+            <button type="submit" class="bg-logo-navy text-white px-6 py-2 rounded font-semibold ml-[25px] ">Continue</button>
+        </div>
+    </form>
+</div>
+
+
+

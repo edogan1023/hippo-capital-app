@@ -1,0 +1,28 @@
+<footer class="bg-logo-navy text-custom-gold py-4 bottom-0 w-full">
+    <div class="max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+
+        <!-- Left side Logo -->
+        <div class="flex items-center">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[75px]" />
+        </div>
+
+        <!-- Center Links -->
+        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-12 items-center">
+            <a href="/" class="hover:text-white transition duration-200 ease-in-out">Home</a>
+            <a href="/business" class="hover:text-white transition duration-200 ease-in-out">Business</a>
+            <a href="/about-us" class="hover:text-white transition duration-200 ease-in-out">About Us & our Partners</a>
+        </div>
+
+        <!-- Right side Copyright -->
+        <div class="text-sm text-center md:text-right text-custom-gold/80">
+            © <span id="year"></span> Hippo Capital. All rights reserved.
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>

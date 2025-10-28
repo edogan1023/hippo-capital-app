@@ -1,0 +1,44 @@
+<body class="bg-logo-navy">
+<header class = "bg-logo-navy h-[100px]">
+    <div class="flex justify-between items-center w-5/7">
+        <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <a href = "/employeeDashboard" class = "flex-1 basis-[5%] max-w-[28px] min-w-[28px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <img src="/images/home-icon.png" alt="Home" class="h-7 w-7" />
+        </a>
+
+        <a href = "/employeeDashboard/userAccounts/{{user.id}}/createAccount" class = "flex-1 basis-[5%] max-w-[130px] min-w-[130px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <div class=" text-center text-custom-gold hover:text-white" data-section="Accounts">
+                Create Account
+            </div>
+        </a>
+    </div>
+</header>
+<hr class="border-white">
+
+
+
+<!-- accounts -->
+<div class="h-full grid grid-flow-row-dense grid-cols-2 md:grid-cols-2 gap-4">
+    {{#each accounts}}
+        <a href="/employeeDashboard/userAccounts/{{user_id}}/userAccountsInfo/{{account_number}}">
+            <div class="cursor-pointer rounded-3xl mt-[25px] max-h-[200px] w-[355px] m-[60px] ml-[200px] mr-[200px]
+                {{#unless is_active}}bg-gray-300{{else}}bg-white{{/unless}}">
+                <div class="flex flex-col items-center justify-center h-full text-logo-navy">
+                    <h3 class="text-lg font-bold">{{account_number}}</h3>
+                    <h2 class="text-lg font-bold">{{capitalizeLetter account_type}} {{capitalizeLetter account_sub_type}} Account</h2>
+                    <p class="text-lg">£{{balance}}</p>
+                    <p class="text-lg">Opened: {{formatDate date_opened}}</p>
+                    <p class="text-lg mt-2 mb-[5px]">Click to see further details</p>
+                </div>
+            </div>
+        </a>
+    {{/each}}
+</div>
+<hr class="border-white mt-[90px]">
+{{> footer }}
+<hr class="border-white">
+</body>
+

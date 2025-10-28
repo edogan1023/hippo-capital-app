@@ -1,0 +1,161 @@
+<script src="/javascripts/userDashboard.js"></script>
+
+<div class="flex flex-col min-h-screen">
+    <header class = "bg-logo-navy h-[100px]">
+        <div class="flex justify-between items-center w-5/7">
+            <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+                <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+            </div>
+
+            <div class="text-custom-gold text-2xl col-span-2 font-bold flex justify-center items-center min-w-[120px]">
+                {{title}} <span class="font-normal capitalize">{{user.user_title}} {{user.first_name}} {{#if user.middle_name}}{{firstLetter user.middle_name}}. {{/if}}{{user.surname}}</span>
+            </div>
+
+            <a href = "/userDashboard" class = "flex-1 basis-[5%] max-w-[28px] min-w-[28px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <img src="/images/home-icon.png" alt="Home" class="h-7 w-7" />
+            </a>
+
+            <a href = "/userDashboard/accounts" class = "flex-1 basis-[5%] max-w-[120px] min-w-[110px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <p class="m-[6px] text-center text-custom-gold hover:text-white">My Accounts</p>
+            </a>
+
+            <!--<a href = "/userDashboard/loans" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <p class="m-[6px] text-center text-custom-gold hover:text-white">Loans</p>
+            </a>-->
+
+            <a href = "/userDashboard/transfer" class = "flex-1 basis-[5%] max-w-[150px] min-w-[100px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <p class="m-[6px] text-center text-custom-gold hover:text-white">Make a Transfer</p>
+            </a>
+
+            <a href = "mailto:hippocapital.services@gmail.com" class = "flex-1 basis-[5%] max-w-[36px] min-w-[36px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <img src="/images/mail-icon.png" alt="Notifications" class="h-9 w-9" />
+            </a>
+
+            <a href = "/" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <p class="m-[6px] text-center text-custom-gold hover:text-white">Log off</p>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <div class="flex flex-row flex-1 relative">
+        <!-- Sidebar Menu -->
+        <div class="bg-logo-navy text-white flex flex-col w-1/4 p-2 max-h-full">
+            <!-- Menu Items -->
+            <div class="space-y-2">
+                {{!-- Menu Option --}}
+                <div>
+                    <div onclick="toggleMenu('creditCards')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Credit Cards
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="creditCards" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Explore our range of: cashback, balance transfer, and everyday spending options. Check your eligibility quickly without impacting your credit score. H. Hippo clearly explains interest, fees, and benefits like Section 75 protection.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('debitCards')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Debit Cards
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="debitCards" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Manage your linked debit cards, set daily limits, see recent transaction activity, and access secure fraud protection tools.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('overdrafts')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Overdrafts
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="overdrafts" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">View your arranged overdraft limit and usage you’ll also see any interest‑free buffer available and essential information on overdraft interest rates and charges.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('savings')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Savings
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="savings" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Browse our savings account options from standard to enhanced interest rates and understand how benefits like cashback eligibility may boost your interest.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('carFinance')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Car Finance
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="carFinance" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Get a snapshot of your car finance agreement, including remaining balance, payment schedule, and any customer support or refinancing options.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('mortgages')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Mortgages
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="mortgages" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Access your mortgage details online: track repayment history, view your outstanding balance, and get support to help manage switching or overpayments. </div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('loans')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Loans
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="loans" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Manage personal loans: view how much you still owe, upcoming repayment dates, and whether you might be eligible for refinancing or early settlement options.</div>
+                </div>
+
+                <div>
+                    <div onclick="toggleMenu('cashback')" class="flex justify-between items-center cursor-pointer p-2 hover:bg-white hover:text-logo-navy rounded">
+                        Cashback
+                        <span class="text-custom-gold">+</span>
+                    </div>
+                    <div id="cashback" class="hidden p-2 text-sm text-logo-navy bg-white text-left rounded mt-1">Track your cashback rewards and eligible transactions, see ongoing offers, and view your total cashback earned across eligible accounts.</div>
+                </div>
+            </div>
+
+            <!-- Cashback Summary at Bottom -->
+            <div class="pt-4">
+                <div class="text-white text-sm">Total Cashback earned</div>
+                <div class="text-white text-lg font-semibold">£0.00</div>
+                <a href = "/userDashboard/cashback" class="hover:bg-logo-navy-hover">
+                    <div class="text-custom-gold mt-2">
+                        <span id = "view-cashback-offers" class="cursor-pointer hover:underline">View all cashback offers</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+
+        <!-- by your side 24/7 display -->
+        <div class="flex flex-col bg-white relative">
+            <!-- Image on top -->
+            <img src="/images/cashback-ads/cashback-boots-ad.png" alt="Cashback Ad" class=" object-fill w-[1470px] h-[350px] min-w-[900px]" />
+
+            <!-- Content below image -->
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <!-- Left: Icon and Text -->
+                <div class="flex items-start space-x-3">
+                    <img src="/images/chat-message.png" alt="Chat icon" class="w-30 h-30" />
+                    <div>
+                        <h2 class="text-xl font-semibold text-logo-navy">By your side 24/7</h2>
+                        <p class="text-sm text-logo-navy mt-1">
+                            Save yourself the worry. <br />
+                            Our team is here to answer your everyday banking queries 24/7.
+                            And if it’s something a bit more complicated, we’ll direct you to the nearest branch.
+                        </p>
+                    </div>
+                </div>
+                <!-- Right: Copy Button -->
+                <div
+                        id="copy-button"
+                        class="mt-4 mr-30 md:mt-0 bg-logo-navy text-white px-4 py-2 rounded-lg cursor-pointer transition-colors hover:bg-logo-navy-hover"
+                        onclick="copyToClipboard()"
+                >
+                    0358 500 0000
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <hr class="border-1 border-custom-gold">
+    {{> footer }}
+</div>
+
+

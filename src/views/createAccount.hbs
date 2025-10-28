@@ -1,0 +1,64 @@
+<script src="/javascripts/createAccount.js" defer></script>
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-10 bg-logo-navy h-[100px]">
+        <div class="col-span-3">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <!-- return -->
+        <a href="/employeeDashboard/userAccounts/{{user.id}}">
+            <div class=" mt-[25px] justify-center item-center group inline-block cursor-pointer text-white border-[1px] border-logo-navy hover:border-custom-gold p-[10px] text-center">
+                Return
+            </div>
+        </a>
+    </div>
+</div>
+
+
+<div class="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md space-y-4">
+    <h1 class="text-xl font-bold">Create New Account</h1>
+    <p class="text-gray-500">Credit Score: <span id="creditScore">{{user.credit_score}}</span></p>
+
+    <form id="createAccountForm" data-user-id="{{user.id}}">
+        <!-- Account Type -->
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Select Account Type</h2>
+            <div id="accountTypeOptions" class="flex flex-col gap-2">
+                <label><input type="checkbox" name="account_type" value="personal_single"> Personal Single</label>
+                <label><input type="checkbox" name="account_type" value="personal_joint"> Personal Joint</label>
+                <label><input type="checkbox" name="account_type" value="business_single"> Business Single</label>
+                <label><input type="checkbox" name="account_type" value="business_multi-signatory"> Business Multi-Signatory</label>
+            </div>
+        </div>
+
+        <!-- Sub Account Type -->
+        <div id="subAccountContainer" class="hidden mt-4">
+            <h2 class="text-lg font-semibold mb-2">Select Sub-Account Type</h2>
+            <div id="subAccountOptions" class="flex flex-col gap-2"></div>
+        </div>
+
+        <!-- Offer Box -->
+        <div id="offerBox" class="hidden bg-blue-50 p-4 rounded-lg border border-blue-200 mt-4">
+            <p class="text-sm text-gray-700 mb-1">
+                With your Credit Score of <span id="scoreDisplay" class="font-semibold"></span>, we can offer you:
+            </p>
+            <ul class="list-disc ml-5 text-sm text-gray-800">
+                <li>Interest Rate (Credit): <span id="rateCredit" class="font-semibold"></span></li>
+                <li>Interest Rate (Debit): <span id="rateDebit" class="font-semibold"></span></li>
+                <li>Overdraft Limit: <span id="overdraftLimit" class="font-semibold">{{formatNumber}}</span></li>
+            </ul>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+            Create Account
+        </button>
+    </form>
+</div>
+
+<script src="/js/createAccount.js"></script>
+
+
+
+
+

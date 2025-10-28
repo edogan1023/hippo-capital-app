@@ -1,0 +1,132 @@
+<script src="/javascripts/createUser.js" defer></script>
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-10 bg-logo-navy h-[100px]">
+        <div class="col-span-3">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <!-- return -->
+        <a href="/employeeDashboard">
+            <div class="mt-[25px] justify-center item-center group inline-block cursor-pointer text-white border-[1px] border-logo-navy hover:border-custom-gold p-[10px] text-center">
+                Return
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-lg mt-8">
+    <h1 class="text-2xl font-bold mb-6 text-logo-navy">Create New User</h1>
+    <form id="createUserForm" class="space-y-6" method="POST" action="/employeeDashboard/createUser/submit">
+
+        <!-- User Email -->
+        <div>
+            <label for="user_email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="user_email" name="user_email" maxlength="50" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="example@gmail.com">
+            <p class="text-red-500 text-sm mt-1 hidden" id="emailError">Invalid email format.</p>
+        </div>
+
+        <!-- User Title -->
+        <div>
+            <label for="user_title" class="block text-sm font-medium text-gray-700">Title</label>
+            <input type="text" id="user_title" name="user_title" maxlength="20" pattern="[A-Za-z\s]+" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="Mr, Ms, Dr">
+        </div>
+
+        <!-- First Name -->
+        <div>
+            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+            <input type="text" id="first_name" name="first_name" maxlength="50" pattern="[A-Za-z\s]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="John" required>
+        </div>
+
+        <!-- Middle Name(s) -->
+        <div>
+            <label for="middle_name" class="block text-sm font-medium text-gray-700">Middle Name(s)</label>
+            <input type="text" id="middle_name" name="middle_name" maxlength="50" pattern="[A-Za-z\s]*"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="H. B.">
+            <p class="text-gray-500 text-sm mt-1">Preview: <span id="middleNamePreview"></span></p>
+        </div>
+
+        <!-- Surname -->
+        <div>
+            <label for="surname" class="block text-sm font-medium text-gray-700">Surname</label>
+            <input type="text" id="surname" name="surname" maxlength="100" pattern="[A-Za-z\s]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="Milton" required>
+        </div>
+
+        <!-- Mother Maiden Name -->
+        <div>
+            <label for="mother_maiden_name" class="block text-sm font-medium text-gray-700">Mother's Maiden Name</label>
+            <input type="text" id="mother_maiden_name" name="mother_maiden_name" maxlength="100" pattern="[A-Za-z\s]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="Smith">
+        </div>
+
+        <!-- Place of Birth -->
+        <div>
+            <label for="place_of_birth" class="block text-sm font-medium text-gray-700">Place of Birth</label>
+            <input type="text" id="place_of_birth" name="place_of_birth" maxlength="255" pattern="[A-Za-z\s]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="London">
+        </div>
+
+        <!-- Phone Number -->
+        <div>
+            <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input type="tel" id="phone_number" name="phone_number" maxlength="20" pattern="[0-9\+\-\s]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="+44 123 456 7890">
+            <p class="text-red-500 text-sm mt-1 hidden" id="phoneError">Invalid phone number format.</p>
+        </div>
+
+        <!-- Date of Birth -->
+        <div>
+            <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm">
+        </div>
+
+        <!-- Security Word -->
+        <div>
+            <label for="security_word" class="block text-sm font-medium text-gray-700">Security Word</label>
+            <input type="text" id="security_word" name="security_word" minlength="6" maxlength="255" pattern="[A-Za-z]+"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                   placeholder="At least 6 letters" required>
+        </div>
+
+        <!-- Passwords -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="relative">
+                <input type="password" id="password" name="password" minlength="8" maxlength="50"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                       placeholder="Strong password">
+                <button type="button" id="togglePassword" class="absolute right-2 top-2 text-sm text-gray-600">Show</button>
+            </div>
+            <div class="mt-2">
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" minlength="8" maxlength="50"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-logo-navy focus:border-logo-navy sm:text-sm"
+                       placeholder="Re-enter password">
+            </div>
+            <p class="text-red-500 text-sm mt-1 hidden" id="passwordError">Passwords do not match or are not strong enough.</p>
+        </div>
+
+        <!-- Hidden Fields -->
+        <input type="hidden" name="user_type" value="end-user">
+        <input type="hidden" name="is_active" value="1">
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit" class="w-full py-3 bg-logo-navy hover:bg-logo-navy-hover text-white font-bold rounded-xl shadow-md">
+                Create User
+            </button>
+        </div>
+    </form>
+</div>

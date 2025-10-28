@@ -1,0 +1,53 @@
+<script src="/javascripts/pendingLoans.js"></script>
+<body class="bg-logo-navy">
+
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-12 h-full justify-center items-center">
+        <div class="col-span-3">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <div class="col-span-1"></div>
+
+        <a href="/userDashboard" class=" col-span-2">
+            <img src="/images/home-icon.png" alt="Home" class="h-7 w-7">
+        </a>
+
+        <a href="/userDashboard/loans" class=" col-span-2">
+            <div class="flex items-center justify-center text-white text-lg font-semibold bg-logo-navy-hover rounded-2xl w-max border-[2px] border-custom-gold p-[5px]">
+                Return
+            </div>
+        </a>
+
+        <div class=" col-span-2">
+            <span class=" text-white font-medium">Hide Rejected Applications</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500
+                  after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                  after:bg-white after:border after:border-gray-300 after:rounded-full
+                  after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white">
+            </label>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- loans -->
+<div id="loan-container" class=" h-full grid grid-flow-row-dense grid-cols-2 md:grid-cols-2 gap-4">
+    {{#each loans}}
+        <a href="/userDashboard/loans/loansInfo/{{loan_number}}">
+            <div id="clickableDiv" class="cursor-pointer rounded-3xl bg-white mt-[25px] max-h-[200px] w-[350px] m-[60px] ml-[200px] mr-[200px]">
+                <div class="flex flex-col items-center justify-center h-full text-logo-navy">
+                    <h3 class="text-lg font-bold">{{loan_number}}</h3>
+                    <h2  class="text-lg font-bold capitalize">{{ loan_type}} Loan</h2>
+                    <p class="text-lg">£{{principal}}</p>
+                    <p class="text-lg">{{term_months}} months at {{intrest_rate}}%</p>
+                    <p class="text-lg mt-2">Click to see further details</p>
+                </div>
+            </div>
+        </a>
+    {{/each}}
+</div>
+</body>

@@ -1,0 +1,44 @@
+<body class="bg-logo-navy">
+
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-12 h-full justify-center items-center">
+        <div class="col-span-3  max-w-[300px] min-w-[300px]">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <div class="col-span-1"></div>
+
+        <a href = "/userDashboard" class = "flex-1 basis-[5%] max-w-[28px] min-w-[28px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <img src="/images/home-icon.png" alt="Home" class="h-7 w-7" />
+        </a>
+
+        <!--Accounts -->
+        <a href="/userDashboard/accounts/userCreateAccount"  class = "flex-1 basis-[5%] max-w-[121px] min-w-[121px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <div class="m-[6px] text-center text-custom-gold hover:text-white" data-section="Accounts">
+                Create Account
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<!-- accounts -->
+<div class=" h-full grid grid-flow-row-dense grid-cols-2 md:grid-cols-2">
+    {{#each account}}
+        <a href="/userDashboard/accounts/accountInfo/{{account_number}}">
+            <div class="cursor-pointer rounded-3xl bg-white mt-[25px] max-h-[200px] w-[350px] mb-[60px] ml-[200px]">
+                <div class="flex flex-col items-center justify-center h-full text-logo-navy">
+                    <h3 class="text-lg font-bold">{{account_number}}</h3>
+                    <h2  class="text-lg font-bold">{{underscoreToSpace account_type}} {{account_sub_type}} Account</h2>
+                    <p class="text-lg">£{{balance}}</p>
+                    <p class="text-lg mt-2 mb-[5px]">Click to see further details</p>
+                </div>
+            </div>
+        </a>
+    {{/each}}
+</div>
+<hr class="border-white mt-[105px]">
+{{> footer }}
+<hr class="border-white">
+</body>
+

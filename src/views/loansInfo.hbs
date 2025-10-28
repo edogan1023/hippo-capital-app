@@ -1,0 +1,73 @@
+<body class="bg-logo-navy">
+<script src="/javascripts/loansInfo.js"></script>
+
+<div class="flex flex-col">
+    <div class="grid grid-flow-col gap-1 grid-cols-12 h-full justify-center items-center">
+        <div class="col-span-3">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <div class="col-span-1"></div>
+
+        <a href="/userDashboard" class=" col-span-2">
+            <img src="/images/home-icon.png" alt="Home" class="h-7 w-7">
+        </a>
+
+        <a href="/userDashboard/loans" class=" col-span-3">
+            <div class="flex items-center justify-center text-white text-lg font-semibold bg-logo-navy-hover rounded-2xl w-max border-[2px] border-custom-gold p-[5px]">
+                Return to loans
+            </div>
+        </a>
+
+    </div>
+</div>
+
+
+
+<!-- loan info-->
+<div class=" bg-black text-black h-full max-w-full mr-[50px] ml-[50px]">
+    <!-- mini header -->
+    <div class=" bg-white rounded pl-[10px] space-y-[8px] pb-[8px]">
+        <h1 class="text-4xl font-bold underline">Loan Details</h1>
+        <p><span class="font-semibold">Loan Number:</span> {{loans.loan_number}}</p>
+        <p><span class="font-semibold">Loan Type:</span> {{capitalizeLetter loans.loan_type}}</p>
+        <p><span class="font-semibold">Loan Holder Name(s):</span>
+        <ul class="capitalize">
+            {{#each loanUsers}}
+                <li>{{first_name}} {{#if middle_name}}{{firstLetter middle_name}}. {{/if}} {{surname}} - {{capitalizeLetter role}}</li>
+            {{/each}}
+        </ul>
+        <p><span class="font-semibold">Loan start Date:</span> {{formatDate loans.start_date}}</p>
+        <p><span class="font-semibold">Loan end Date:</span> {{ formatDate loans.end_date}}</p>
+        <p><span class="font-semibold">Loan payment frequency:</span> {{loans.repayment_frequency}}</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8 mt-[10px]">
+        <div class="bg-gray-50 p-4 rounded shadow text-center">
+            <p class="text-gray-500 text-sm">Current Balance</p>
+            <p class="text-xl font-semibold">£{{formatNumber loans.remaining_balance}}</p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded shadow text-center">
+            <p class="text-gray-500 text-sm">Interest Rate</p>
+            <p class="text-xl font-semibold">{{loans.intrest_rate}}%</p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded shadow text-center">
+            <p class="text-gray-500 text-sm">Loan Term </p>
+            <p class="text-xl font-semibold">{{loans.term_months}} Months</p>
+        </div>
+        {{#if loans.collateral}}
+            <div class="bg-gray-50 p-4 rounded shadow text-center">
+                <p class="text-gray-500 text-sm">Collateral</p>
+                <p class="text-xl font-semibold">{{#if loans.collateral}}{{ loans.collateral}} {{else}}N/A{{/if}}</p>
+            </div>
+        {{/if}}
+    </div>
+
+
+
+</div>
+
+</body>

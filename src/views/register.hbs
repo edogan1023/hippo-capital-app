@@ -1,0 +1,47 @@
+<header class = "bg-logo-navy h-[100px]">
+    <div class="flex justify-between items-center w-1/2">
+        <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+        <a href = "/" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center  hover: transition duration-200 ease-in-out hover:scale-105">
+            <div>
+                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Return</p>
+            </div>
+        </a>
+
+        <div class = "flex-1 basis-[5%] max-w-[125px] min-w-[125px] flex justify-center-safe items-center">
+            <p class="m-[6px] text-center text-custom-gold">Safe & Secure</p>
+        </div>
+    </div>
+</header>
+
+
+<p class = "text-center mt-8">
+    Sadly due to security reasons, we cannot allow you to register an account through our website.
+    <br>We only allow physical registration at our offices.
+    <br>You can find our offices at the following address:
+</p>
+
+
+
+<table class="min-w-full border-collapse border border-gray-300 mt-4 ">
+    <thead>
+    <tr class="bg-gray-200">
+        <th class="border border-gray-300 px-4 py-2 text-left">Branch Location</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">Branch Address</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">Branch Phone Number</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each branches}}
+        <tr>
+            <td class="border border-gray-300 px-4 py-2">{{branch_name}}</td>
+            <td class="border border-gray-300 px-4 py-2">{{branch_address}}</td>
+            <td class="border border-gray-300 px-4 py-2">{{branch_phone_number}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+
+<hr class="border-white mt-[25px]">
+{{> footer }}

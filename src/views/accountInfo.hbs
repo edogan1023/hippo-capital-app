@@ -1,0 +1,106 @@
+<link rel="stylesheet" href="/vendor/flatpickr/flatpickr.min.css">
+<script src="/vendor/flatpickr/flatpickr.min.js"></script>
+<script src="/javascripts/accountInfo.js"></script>
+<body class="bg-logo-navy">
+
+
+<header class = "bg-logo-navy h-[100px]">
+    <div class="flex justify-between items-center w-5/7">
+        <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+        </div>
+
+        <a href = "/userDashboard" class = "flex-1 basis-[5%] max-w-[28px] min-w-[28px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <img src="/images/home-icon.png" alt="Home" class="h-7 w-7" />
+        </a>
+
+        <a href = "/userDashboard/accounts" class = "flex-1 basis-[5%] max-w-[150px] min-w-[100px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+            <p class="m-[6px] text-center text-custom-gold hover:text-white">Return to Accounts</p>
+        </a>
+    </div>
+</header>
+
+
+
+
+<!-- account info-->
+<div class=" bg-black text-black h-full max-w-full mr-[90px] ml-[90px]">
+    <div class=" bg-white rounded pl-[5px] space-y-[6px] pb-[6px]">
+        <h1 class="text-2xl font-bold underline">Account Details</h1>
+        <p><span class="font-semibold">Account Number:</span> <span id="accountNumber">{{account.account_number}}</span></p>
+        <p><span class="font-semibold">Account Type & Sub-Type:</span> {{capitalizeLetter account.account_type}} {{capitalizeLetter account.account_sub_type}}</p>
+        <p><span class="font-semibold">Account Holder Name(s):</span>
+        <ul class="capitalize space-y-[8px] pb-[6px]">
+            {{#each account_user}}
+                <li>{{first_name}} {{#if middle_name}}{{firstLetter middle_name}}. {{/if}} {{surname}} - {{capitalizeLetter role}}</li>
+            {{/each}}
+        </ul>
+        <p><span class="font-semibold">Account Opened Date:</span> {{formatDate account.date_opened}}</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8 mt-[10px]">
+        <div class="bg-gray-50 p-4 rounded shadow text-center w-50">
+            <p class="text-gray-500 text-sm">Current Balance</p>
+            <p class="text-xl font-semibold">£{{formatNumber account.balance}}</p>
+        </div>
+        {{#if account.interest_rate_credit}}
+            <div class="bg-gray-50 p-4 rounded shadow text-center w-50">
+                <p class="text-gray-500 text-sm">Interest Rate Earned</p>
+                <p class="text-xl font-semibold">{{#if account.interest_rate_credit}}{{account.interest_rate_credit}}% {{else}}N/A{{/if}}</p>
+            </div>
+        {{/if}}
+        {{#if account.interest_rate_debit}}
+            <div class="bg-gray-50 p-4 rounded shadow text-center w-50">
+                <p class="text-gray-500 text-sm">Interest Rate Charged</p>
+                <p class="text-xl font-semibold">{{#if account.interest_rate_debit}}{{account.interest_rate_debit}}% {{else}}N/A{{/if}}</p>
+            </div>
+        {{/if}}
+        {{#if account.interest_rate_debit}}
+            <div class="bg-gray-50 p-4 rounded shadow text-center w-50">
+                <p class="text-gray-500 text-sm">Overdraft Limit</p>
+                <p class="text-xl font-semibold">{{#if account.overdraft_limit}}£{{formatNumber account.overdraft_limit}} {{else}}N/A{{/if}}</p>
+            </div>
+        {{/if}}
+    </div>
+
+
+    <!-- Transactions Table -->
+    <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Transfers</h2>
+        <!-- Filters -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <input id="searchInput" type="text" placeholder="Search description, type..." class="border rounded px-4 py-2 flex-1"/>
+            <input id="dateFilter" type="text" placeholder="Select day or month" class="border rounded px-4 py-2 w-[200px]"/>
+            <button id="applyFilters" class="bg-logo-navy hover:bg-logo-navy-hover text-white px-4 py-2 rounded">Apply Filters</button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left text-gray-600">
+                <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                <tr>
+                    <th class="px-4 py-3 w-27">Date & Time</th>
+                    <th class="px-4 py-3 w-40">Description</th>
+                    <th class="px-4 py-3">Direction</th>
+                    <th class="px-4 py-3">Type</th>
+                    <th class="px-4 py-3">Amount</th>
+                    <th class="px-4 py-3 w-40">Running Balance</th>
+                    <th class="px-4 py-3">From</th>
+                    <th class="px-4 py-3">To</th>
+                </tr>
+                </thead>
+                <tbody id="transactionTableBody">
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="flex justify-center mt-4">
+            <button id="loadMoreBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Load More</button>
+        </div>
+    </div>
+</div>
+<hr class="border-white mt-[10px]">
+{{> footer }}
+<hr class="border-white">
+</body>

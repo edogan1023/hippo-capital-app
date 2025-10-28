@@ -1,0 +1,131 @@
+<header class="bg-logo-navy h-[100px]">
+    <div class="flex justify-between items-center w-1/2">
+        <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]" />
+        </div>
+
+        <a href="/" class="flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center border-2 border-custom-gold m-[5px] hover:bg-logo-navy-hover transition duration-200 ease-in-out hover:scale-105">
+            <div>
+                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Personal</p>
+            </div>
+        </a>
+
+        <a href="/business" class="flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center border-2 border-custom-gold m-[5px] hover:bg-logo-navy-hover transition duration-200 ease-in-out hover:scale-105">
+            <div>
+                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Business</p>
+            </div>
+        </a>
+
+        <div class="w-[50px]"></div>
+
+        <a href="/register" class="flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center border-2 border-custom-gold m-[5px] hover:bg-logo-navy-hover transition duration-200 ease-in-out hover:scale-105">
+            <div>
+                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Register</p>
+            </div>
+        </a>
+
+        <a href="/login" class="flex-1 basis-[5%] max-w-[100px] min-w-[50px] flex justify-center-safe items-center border-2 border-custom-gold m-[5px] hover:bg-logo-navy-hover transition duration-200 ease-in-out hover:scale-105">
+            <div>
+                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Log in</p>
+            </div>
+        </a>
+    </div>
+</header>
+<hr class="border-t border-white my-0.1" />
+
+
+<div class="bg-white text-gray-900 min-h-screen flex flex-col">
+
+    {{!-- Hero Section --}}
+    <section class="bg-logo-navy text-white py-16 px-6 text-center">
+        <h1 class="text-5xl font-bold mb-4">Empower Your Business with Hippo Capital</h1>
+        <p class="text-xl max-w-2xl mx-auto">Flexible, secure, and tailored financial solutions for businesses of all sizes.</p>
+        <a href="/userDashboard/accounts/userCreateAccount" class="mt-6 inline-block px-6 py-3 bg-custom-gold text-logo-navy font-semibold rounded hover:bg-yellow-500">
+            Open a Business Account
+        </a>
+    </section>
+
+    {{!-- Features Section --}}
+    <section class="py-16 px-6 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Why Choose Hippo Business Accounts?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+                <h3 class="text-xl font-semibold mb-2">💳 Multi-User Access</h3>
+                <p>Grant access to your team with customizable permissions and secure controls.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold mb-2">📊 Real-Time Insights</h3>
+                <p>Track spending, manage cash flow, and generate reports instantly.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold mb-2">🌍 Global Payments</h3>
+                <p>Send and receive payments from any country with no fees.</p>
+            </div>
+        </div>
+    </section>
+
+    {{!-- Account Tiers --}}
+    <section class="bg-gray-100 py-16 px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Account Options</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="bg-white p-6 rounded shadow">
+                <h3 class="text-xl font-bold mb-2">Credit</h3>
+                <p class="mb-4">Perfect for growing businesses.</p>
+                <ul class="text-left list-disc list-inside mb-4">
+                    <li>No monthly fees</li>
+                    <li>Basic analytics</li>
+                    <li>Multi user access</li>
+                </ul>
+                <a href="/userDashboard/accounts/userCreateAccount" class="text-logo-navy font-semibold hover:underline">Get Started</a>
+            </div>
+            <div class="bg-white p-6 rounded shadow border-2 border-custom-gold">
+                <h3 class="text-xl font-bold mb-2">Current</h3>
+                <p class="mb-4">Ideal for growing teams and small businesses.</p>
+                <ul class="text-left list-disc list-inside mb-4">
+                    <li>Multi-user access</li>
+                    <li>Overdraft options</li>
+                    <li>Gain upto 5% interest</li>
+                </ul>
+                <a href="/userDashboard/accounts/userCreateAccount" class="text-logo-navy font-semibold hover:underline">Upgrade Now</a>
+            </div>
+            <div class="bg-white p-6 rounded shadow">
+                <h3 class="text-xl font-bold mb-2">Savings</h3>
+                <p class="mb-4">Custom solutions for large-scale operations.</p>
+                <ul class="text-left list-disc list-inside mb-4">
+                    <li>High Interest account</li>
+                    <li>no fees for 3 withdrawals made per year</li>
+                    <li>Equal & majority share account options</li>
+                </ul>
+                <a href="/userDashboard/accounts/userCreateAccount" class="text-logo-navy font-semibold hover:underline">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    {{!-- Testimonials --}}
+    <section class="py-16 px-6 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded shadow">
+                <p class="italic">“Hippo Capital transformed how we manage our finances. The dashboard is intuitive and the support is top-notch.”</p>
+                <p class="mt-4 font-semibold">— John P., Founder of Agent 5.5</p>
+            </div>
+            <div class="bg-white p-6 rounded shadow">
+                <p class="italic">“We scaled from 3 to 30 employees and Hippo’s business account handled it all without a hitch.”</p>
+                <p class="mt-4 font-semibold">— Tim C., COO of Marvin Beak</p>
+            </div>
+        </div>
+    </section>
+
+    {{!-- CTA Footer --}}
+    <section class="bg-logo-navy text-white py-12 text-center">
+        <h2 class="text-3xl font-bold mb-4">Ready to elevate your business?</h2>
+        <a href="/register" class="inline-block px-6 py-3 bg-custom-gold text-logo-navy font-semibold rounded hover:bg-yellow-500">
+            Join us now
+        </a>
+    </section>
+
+
+</div>
+<hr class="border-white">
+{{> footer }}
+
