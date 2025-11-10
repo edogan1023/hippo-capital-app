@@ -213,20 +213,24 @@ router.put('/table/:tableName/:id', async (req, res, next) => {
         const values = keys.map(k => {
             // convert some values properly
             if (k === 'is_active') return Number(toUpdate[k]);
-            if (k === 'credit_score') return Number(toUpdate[k]);
+            if (k === 'credit_score') return toUpdate[k] != null ? Number(toUpdate[k]) : null;
             if (['interest_rate_credit','interest_rate_debit','overdraft_limit','cashback'].includes(k)) {
-                return toUpdate[k] === '' ? null : toUpdate[k];
+                return toUpdate[k] !== undefined && toUpdate[k] !== '' ? toUpdate[k] : null;
             }
-            const dobVal = payload.dob || null;
-
+            if (k === 'dob') {
+                if (!toUpdate[k]) return null;
+                const parts = toUpdate[k].split('/');
+                return parts.length === 3 ? `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}` : null;
+            }
+            // all other fields: if undefined, pass null
+            return toUpdate[k] !== undefined ? toUpdate[k] : null;
         });
 
-        values.push(rowId);
+        values.push(rowId); // id for WHERE clause
 
         const sql = `UPDATE \`${tableName}\` SET ${setParts} WHERE id = ?`;
         await dbPool.execute(sql, values);
 
-        // Optionally: write an audit log here (not implemented)
         res.json({ success: true });
     } catch (error) {
         console.error('Error updating row:', error);
@@ -279,9 +283,9 @@ router.post('/table/:tableName/add', async (req, res, next) => {
                 user_id: userIdVal,
                 account_sub_type: payload.account_sub_type,
                 date_opened: new Date().toISOString().slice(0,10),
-                interest_rate_credit: payload.interest_rate_credit || null,
-                interest_rate_debit: payload.interest_rate_debit || null,
-                overdraft_limit: payload.overdraft_limit || null,
+                interest_rate_credit: payload.interest_rate_credit !== undefined && payload.interest_rate_credit !== '' ? payload.interest_rate_credit : null,
+                interest_rate_debit: payload.interest_rate_debit !== undefined && payload.interest_rate_debit !== '' ? payload.interest_rate_debit : null,
+                overdraft_limit: payload.overdraft_limit !== undefined && payload.overdraft_limit !== '' ? payload.overdraft_limit : null,
                 is_active: Number(payload.is_active)
             };
 
@@ -319,23 +323,23 @@ router.post('/table/:tableName/add', async (req, res, next) => {
                 user_email: payload.user_email,
                 password: payload.password,
                 first_name: payload.first_name,
-                middle_name: payload.middle_name || null,
+                middle_name: payload.middle_name !== undefined ? payload.middle_name : null,
                 surname: payload.surname,
-                mother_maiden_name: payload.mother_maiden_name || null,
-                place_of_birth: payload.place_of_birth || null,
-                security_word: payload.security_word || null,
+                mother_maiden_name: payload.mother_maiden_name !== undefined ? payload.mother_maiden_name : null,
+                place_of_birth: payload.place_of_birth !== undefined ? payload.place_of_birth : null,
+                security_word: payload.security_word !== undefined ? payload.security_word : null,
                 phone_number: payload.phone_number,
-                user_title: payload.user_title || null,
+                user_title: payload.user_title !== undefined ? payload.user_title : null,
                 user_type: payload.user_type,
                 is_active: Number(payload.is_active),
                 dob: dobVal,
-                credit_score: payload.credit_score || null
+                credit_score: payload.credit_score !== undefined && payload.credit_score !== '' ? payload.credit_score : null
             };
 
-            const keys = Object.keys(insertData);
-            const values = keys.map(k => insertData[k]);
-            const placeholders = keys.map(() => '?').join(',');
-            await dbPool.execute(`INSERT INTO user (${keys.join(',')}) VALUES (${placeholders})`, values);
+            const userKeys = Object.keys(insertData);
+            const userValues = userKeys.map(k => insertData[k]);
+            const userPlaceholders = userKeys.map(() => '?').join(',');
+            await dbPool.execute(`INSERT INTO user (${userKeys.join(',')}) VALUES (${userPlaceholders})`, userValues);
 
             return res.json({ success: true, message: `Successfully added user ${payload.user_email}` });
 
@@ -358,15 +362,12 @@ router.post('/table/:tableName/add', async (req, res, next) => {
                 branch_phone_number: payload.branch_phone_number
             };
 
-            const keys = Object.keys(insertData);
-            const values = keys.map(k => insertData[k]);
-            const placeholders = keys.map(() => '?').join(',');
-
-            // Pass values array
-            await dbPool.execute(`INSERT INTO branch (${keys.join(',')}) VALUES (${placeholders})`, values);
+            const branchKeys = Object.keys(insertData);
+            const branchValues = branchKeys.map(k => insertData[k]);
+            const branchPlaceholders = branchKeys.map(() => '?').join(',');
+            await dbPool.execute(`INSERT INTO branch (${branchKeys.join(',')}) VALUES (${branchPlaceholders})`, branchValues);
 
             return res.json({ success: true, message: `Successfully added branch ${payload.branch_name}` });
-
 
             // === CASHBACK_OFFERS TABLE ===
         } else if (tableName === 'cashback_offers') {
@@ -387,17 +388,14 @@ router.post('/table/:tableName/add', async (req, res, next) => {
                 offer_image: payload.offer_image
             };
 
-            const keys = Object.keys(insertData);
-            const values = keys.map(k => insertData[k]);
-            const placeholders = keys.map(() => '?').join(',');
-            await dbPool.execute(
-                `INSERT INTO cashback_offers (${keys.join(',')}) VALUES (${placeholders})`,
-                values
-            );
+            const cbKeys = Object.keys(insertData);
+            const cbValues = cbKeys.map(k => insertData[k]);
+            const cbPlaceholders = cbKeys.map(() => '?').join(',');
+            await dbPool.execute(`INSERT INTO cashback_offers (${cbKeys.join(',')}) VALUES (${cbPlaceholders})`, cbValues);
 
             return res.json({ success: true, message: `Successfully added cashback offer for ${payload.company_name}` });
 
-        // === TRANSACTION TABLE ===
+            // === TRANSACTION TABLE ===
         } else if (tableName === 'transaction') {
             const amount = parseFloat(payload.amount);
             if (isNaN(amount) || amount <= 0) return res.status(400).json({ error: 'Amount must be >0' });
@@ -425,21 +423,13 @@ router.post('/table/:tableName/add', async (req, res, next) => {
             const description = payload.description?.substring(0, 255) || null;
             const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-            // Only update balances if transaction successful
             if (transactionSuccess === 'success') {
-                // Update balances in JS first
-                senderBalance = senderAccRows.length ? Number(senderAccRows[0].balance) : 0;
-                recipientBalance = recipientAccRows.length ? Number(recipientAccRows[0].balance) : 0;
                 senderBalance -= amount;
                 recipientBalance += amount;
-                console.log(recipientBalance);
-
-                // Update accounts in DB using updated variables
                 await dbPool.execute('UPDATE account SET balance = ? WHERE account_number = ?', [senderBalance, senderAccNum]);
                 await dbPool.execute('UPDATE account SET balance = ? WHERE account_number = ?', [recipientBalance, recipientAccNum]);
             }
 
-            // Insert transaction rows using updated balances
             const senderRow = {
                 id: null,
                 amount,
@@ -468,49 +458,17 @@ router.post('/table/:tableName/add', async (req, res, next) => {
                 date_time: now
             };
 
-            // Insert sender row
             await dbPool.execute(
-                `INSERT INTO transaction
-                 (id, amount, description, type, sender_account_number, recipient_account_number, direction, transaction_success, running_balance, created_at, date_time)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-                [
-                    senderRow.id,
-                    senderRow.amount,
-                    senderRow.description,
-                    senderRow.type,
-                    senderRow.sender_account_number,
-                    senderRow.recipient_account_number,
-                    senderRow.direction,
-                    senderRow.transaction_success,
-                    senderRow.running_balance,
-                    senderRow.created_at,
-                    senderRow.date_time
-                ]
+                `INSERT INTO transaction (id, amount, description, type, sender_account_number, recipient_account_number, direction, transaction_success, running_balance, created_at, date_time) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                Object.values(senderRow)
             );
-
-            // Insert recipient row
             await dbPool.execute(
-                `INSERT INTO transaction
-                 (id, amount, description, type, sender_account_number, recipient_account_number, direction, transaction_success, running_balance, created_at, date_time)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-                [
-                    recipientRow.id,
-                    recipientRow.amount,
-                    recipientRow.description,
-                    recipientRow.type,
-                    recipientRow.sender_account_number,
-                    recipientRow.recipient_account_number,
-                    recipientRow.direction,
-                    recipientRow.transaction_success,
-                    recipientRow.running_balance,
-                    recipientRow.created_at,
-                    recipientRow.date_time
-                ]
+                `INSERT INTO transaction (id, amount, description, type, sender_account_number, recipient_account_number, direction, transaction_success, running_balance, created_at, date_time) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                Object.values(recipientRow)
             );
 
             return res.json({ success: true, message: `Transaction processed (${transactionSuccess})` });
         }
-
 
     } catch (error) {
         console.error('Error adding row:', error);
@@ -525,17 +483,25 @@ router.post('/table/:tableName/add', async (req, res, next) => {
 router.delete('/table/:tableName/:id', async (req, res, next) => {
     try {
         const tableName = req.params.tableName;
-        const rowId = req.params.id;
+        const rowId = Number(req.params.id);
 
-        if (!['branch','cashback_offers'].includes(tableName)) {
+        if (!['branch', 'cashback_offers'].includes(tableName)) {
             return res.status(400).json({ error: 'Delete not allowed for this table' });
         }
 
-        await dbPool.execute(`DELETE FROM \`${tableName}\` WHERE id = ?`, [rowId]);
+        if (isNaN(rowId) || rowId <= 0) {
+            return res.status(400).json({ error: 'Invalid row ID' });
+        }
+
+        const [result] = await dbPool.execute(`DELETE FROM \`${tableName}\` WHERE id = ?`, [rowId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Row not found' });
+        }
 
         res.json({ success: true, message: `${tableName} row deleted` });
     } catch (err) {
-        console.error(err);
+        console.error('Error deleting row:', err);
         res.status(500).json({ error: 'Server error while deleting' });
     }
 });
