@@ -1,8 +1,8 @@
 import express from 'express';
 import { getUserById } from '../services/loginService.js';
-import session from "express-session";
 import dbPool from "../services/database.js";
 import bcrypt from 'bcrypt';
+
 
 const router = express.Router();
 
@@ -35,8 +35,8 @@ router.get('/', async function (req, res, next) {
              WHERE user_type = 'end-user'
                AND (user_email LIKE ? OR first_name LIKE ? OR middle_name LIKE ? OR surname LIKE ?)
              ORDER BY user_email ASC
-             LIMIT ? OFFSET ?`,
-            [search, search, search, search, limit, offset]
+             LIMIT ${limit} OFFSET ${offset}`,
+            [search, search, search, search]
         );
 
         // Return JSON for AJAX
@@ -52,44 +52,50 @@ router.get('/', async function (req, res, next) {
     }
 });
 
-
 router.get('/userAccounts/:id', async (req, res, next) => {
-    const userId = req.params.id;
+    const userIdParam = parseInt(req.params.id, 10);
 
     try {
         // Get user info
         const [userRows] = await dbPool.execute(
             'SELECT id, user_title, first_name, middle_name, surname, user_email FROM user WHERE id = ?',
-            [userId]
+            [userIdParam]
         );
 
         if (userRows.length === 0) {
             return res.status(404).send('User not found');
         }
-
         const user = userRows[0];
 
-        // Get accounts for this user
-        const [accountRows] = await dbPool.execute(
-            'SELECT id, account_number, account_type, account_sub_type, date_opened , balance, is_active, user_id FROM account WHERE user_id = ?',
-            [userId]
-        );
+        // --- Get accounts linked to this user using JOIN
+        const sql = `
+            SELECT a.id, a.account_number, a.account_type, a.account_sub_type, a.date_opened,
+                   a.balance, a.is_active
+            FROM account a
+            JOIN account_user au ON a.account_number = au.account_number
+            WHERE au.user_id = ?
+            ORDER BY a.account_number ASC
+        `;
+        const [accountRows] = await dbPool.execute(sql, [userIdParam]);
 
         res.render('userAccounts', {
             user,
             accounts: accountRows
         });
+
     } catch (err) {
+        console.error('Error fetching user accounts:', err);
         next(err);
     }
 });
 
+
+
 router.get("/userAccounts/:userId/userAccountsInfo/:accountNumber", async (req, res, next) => {
     try {
-        if (!req.cookies.userId) return res.redirect("/login");
-
-        const userIdParam = parseInt(req.params.userId, 10);
-        const accountNumberParam = parseInt(req.params.accountNumber, 10);
+        // Keep as string to match DB type
+        const userIdParam = parseInt(req.params.userId, 10); // user_id is INT in DB
+        const accountNumberParam = req.params.accountNumber;  // account_number kept as string
 
         // Pagination & search
         const offset = parseInt(req.query.offset) || 0;
@@ -98,26 +104,31 @@ router.get("/userAccounts/:userId/userAccountsInfo/:accountNumber", async (req, 
         const dateFrom = req.query.dateFrom || null;
         const dateTo = req.query.dateTo || null;
 
-        // --- account info
-        const [accountRows] = await dbPool.execute(
-            `SELECT account_number, balance, account_type, account_sub_type, date_opened,
-                    interest_rate_credit, interest_rate_debit, overdraft_limit, user_id, is_active
-             FROM account
-             WHERE user_id = ? AND account_number = ?`,
-            [userIdParam, accountNumberParam]
-        );
+        // --- Account info with JOIN to verify user linkage
+        const accountSql = `
+            SELECT a.account_number, a.balance, a.account_type, a.account_sub_type, a.date_opened,
+                   a.interest_rate_credit, a.interest_rate_debit, a.overdraft_limit, a.is_active
+            FROM account a
+                     JOIN account_user au ON a.account_number = au.account_number
+            WHERE a.account_number = ? AND au.user_id = ?
+        `;
+        const [accountRows] = await dbPool.execute(accountSql, [accountNumberParam, userIdParam]);
 
-        // --- linked users
-        const [usersRows] = await dbPool.execute(
-            `SELECT user.id, user.first_name, user.middle_name, user.surname, account_user.role
-             FROM account_user
-                      JOIN user ON account_user.user_id = user.id
-             WHERE account_user.account_number = ?
-             ORDER BY account_user.role ASC`,
-            [accountNumberParam]
-        );
+        if (!accountRows.length) {
+            return res.status(404).send("Account not found or inaccessible for this user.");
+        }
 
-        // --- transactions (with search and date filters)
+        // --- Linked users for this account
+        const usersSql = `
+            SELECT u.id, u.first_name, u.middle_name, u.surname, au.role
+            FROM account_user au
+                     JOIN user u ON au.user_id = u.id
+            WHERE au.account_number = ?
+            ORDER BY au.role ASC
+        `;
+        const [usersRows] = await dbPool.execute(usersSql, [accountNumberParam]);
+
+        // --- Transactions with filters
         let txSql = `
             SELECT amount, date_time, description, type, running_balance,
                    recipient_account_number, sender_account_number, transaction_success,
@@ -129,15 +140,14 @@ router.get("/userAccounts/:userId/userAccountsInfo/:accountNumber", async (req, 
             WHERE (sender_account_number = ? OR recipient_account_number = ?)
               AND (description LIKE ? OR type LIKE ? OR transaction_success LIKE ?)
         `;
-
         const txParams = [
             accountNumberParam, // CASE sender
             accountNumberParam, // CASE recipient
             accountNumberParam, // WHERE sender
             accountNumberParam, // WHERE recipient
-            search,             // description LIKE
-            search,             // type LIKE
-            search              // transaction success LIKE
+            search,
+            search,
+            search
         ];
 
         // Optional date filtering
@@ -154,26 +164,24 @@ router.get("/userAccounts/:userId/userAccountsInfo/:accountNumber", async (req, 
         const total = countRows[0].total;
 
         // Apply pagination
-        txSql += " ORDER BY date_time DESC LIMIT ? OFFSET ?";
-        txParams.push(limit, offset);
+        txSql += ` ORDER BY date_time DESC LIMIT ${limit} OFFSET ${offset}`;
+        const [transactionRows] = await dbPool.query(txSql, txParams);
 
-        const [transactionRows] = await dbPool.execute(txSql, txParams);
-
-        // --- Return JSON for AJAX requests
+        // JSON for AJAX
         if (req.headers.accept && req.headers.accept.includes("application/json")) {
             return res.json({ rows: transactionRows, total });
         }
 
-        // --- Render full page for normal requests
+        // Render normal page
         res.render("userAccountsInfo", {
             user_id: userIdParam,
             account: accountRows[0],
             account_user: usersRows,
-            transaction: transactionRows // include transactions for first load
+            transaction: transactionRows
         });
 
     } catch (error) {
-        console.error("Error fetching account data or transactions:", error);
+        console.error("Error fetching user account info:", error);
         next(error);
     }
 });
@@ -344,7 +352,6 @@ router.post('/userAccounts/:userId/userAccountsInfo/:accountNumber/removeUser', 
         res.redirect(`/employeeDashboard/userAccounts/${userId}/userAccountsInfo/${accountNumber}?error=unexpected-error`);
     }
 });
-
 
 
 

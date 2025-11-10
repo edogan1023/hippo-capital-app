@@ -1,47 +1,46 @@
 <script src="/javascripts/cashback.js"></script>
-
-
-<header class = "bg-logo-navy h-[100px]">
-    <div class="flex justify-between items-center w-1/2">
-        <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
-            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
-        </div>
-        <a href = "/userDashboard" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center m-[5px] hover: transition duration-200 ease-in-out hover:scale-105">
-            <div>
-                <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Return</p>
+<body class="bg-logo-navy">
+    <header class = "bg-logo-navy h-[100px]">
+        <div class="flex justify-between items-center w-1/2">
+            <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+                <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
             </div>
-        </a>
+            <a href = "/userDashboard" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center m-[5px] hover: transition duration-200 ease-in-out hover:scale-105">
+                <div>
+                    <p class="m-[6px] text-center text-custom-gold transition duration-200 ease-in-out hover:text-white">Return</p>
+                </div>
+            </a>
 
-    </div>
-</header>
-
-
-
-<!-- cashback offers -->
-<div id="cashback-offers-list" class=" bg-logo-navy h-full grid grid-flow-row-dense grid-cols-2 md:grid-cols-4 gap-4">
-    {{#each cashback_offers}}
-        <div class="rounded-3xl bg-white mt-[25px] max-h-[350px] cursor-pointer w-[200px]"
-             onclick="showTCModal('{{company_name}}', '{{conditions}}')">
-            <div class="flex flex-col items-center justify-center h-full text-logo-navy">
-                <img src="/images/offers/{{offer_image}}" alt="{{company_name}} logo" class="rounded-2xl w-[200px] h-[160px] object-cover object-center"/>
-                <h3 class="text-lg font-bold">{{company_name}}</h3>
-                <p class="text-lg">{{cashback}}%</p>
-                <p class="text-lg mt-2">Click to see T&Cs</p>
-            </div>
         </div>
-    {{/each}}
-</div>
+    </header>
+    <hr class = "border-1 border-white">
 
-<!-- T&Cs Modal -->
-<div id="tc-modal-overlay" class="fixed inset-0 flex items-center justify-center z-50 hidden"
-    style="background: rgba(0,0,0,0.8);">
-    <div class="bg-logo-navy-hover text-white rounded-3xl p-8 max-w-lg w-full relative flex flex-col items-center">
-        <button onclick="hideTCModal()" class="absolute top-2 left-2 bg-custom-gold px-3 py-1 rounded-lg">
-            &#8592; Back
-        </button>
-        <h2 id="tc-modal-title" class="text-2xl font-bold mb-4 mt-8">Terms & Conditions</h2>
-        <p id="tc-modal-content" class="text-lg font-semibold text-center"></p>
+
+    <!-- cashback offers -->
+    <div id="cashback-offers-list" class="h-full grid grid-flow-row-dense grid-cols-2 md:grid-cols-4 gap-4 ml-[180px]">
+        {{#each cashback_offers}}
+            <div class="rounded-3xl bg-white mt-[25px] max-h-[350px] cursor-pointer w-[200px]"
+                 onclick="showTCModal('{{company_name}}', '{{conditions}}')">
+                <div class="flex flex-col items-center justify-center h-full text-logo-navy">
+                    <img src="/images/offers/{{offer_image}}" alt="{{company_name}} logo" class="rounded-2xl w-[200px] h-[160px] object-cover object-center"/>
+                    <h3 class="text-lg font-bold">{{company_name}}</h3>
+                    <p class="text-lg">{{cashback}}%</p>
+                    <p class="text-lg mt-2">Click to see T&Cs</p>
+                </div>
+            </div>
+        {{/each}}
     </div>
-</div>
 
+    <!-- T&Cs Modal -->
+    <div id="tc-modal-overlay" class="fixed inset-0 flex items-center justify-center z-50 hidden"
+        style="background: rgba(0,0,0,0.8);">
+        <div class="bg-logo-navy-hover text-white rounded-3xl p-8 max-w-lg w-full relative flex flex-col items-center">
+            <button onclick="hideTCModal()" class="absolute top-2 left-2 bg-custom-gold px-3 py-1 rounded-lg">
+                &#8592; Back
+            </button>
+            <h2 id="tc-modal-title" class="text-2xl font-bold mb-4 mt-8">Terms & Conditions</h2>
+            <p id="tc-modal-content" class="text-lg font-semibold text-center"></p>
+        </div>
+    </div>
 
+</body>

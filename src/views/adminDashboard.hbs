@@ -1,30 +1,47 @@
 <script src="/javascripts/adminDashboard.js" defer></script>
 
 <div class="flex flex-col min-h-screen">
-    <!-- Top Bar -->
-    <div class="grid grid-flow-col grid-cols-10 bg-logo-navy h-[100px]">
-        <div class="col-span-2">
-            <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]" />
+    <header class = "bg-logo-navy h-[100px] min-w-[700px]">
+        <div class="flex justify-between items-center w-5/7">
+            <div class="flex-1 basis-[5%] max-w-[300px] min-w-[300px]">
+                <img src="/images/hippo-logo.png" alt="Hippo Capital Logo" class="h-[100px]"/>
+            </div>
+            <div class="text-custom-gold text-2xl col-span-2 font-bold flex justify-center items-center min-w-[120px]">
+                <span class="font-normal capitalize">{{user.user_title}} {{user.first_name}} {{#if user.middle_name}}{{firstLetter user.middle_name}}. {{/if}}{{user.surname}}</span>
+            </div>
+            <a href = "/adminDashboard" class = "flex-1 basis-[5%] max-w-[28px] min-w-[28px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <img src="/images/home-icon.png" alt="Home" class="h-7 w-7"/>
+            </a>
+            <a href = "/" class = "flex-1 basis-[5%] max-w-[100px] min-w-[75px] flex justify-center-safe items-center transition duration-200 ease-in-out hover:scale-105">
+                <p class="m-[6px] text-center text-custom-gold hover:text-white">Log off</p>
+            </a>
         </div>
+    </header>
 
-        <div class="col-span-3 flex justify-center items-center gap-10">
-            <a href="/adminDashboard">
-                <img src="/images/home-icon.png" alt="Home" class="h-7 w-7" />
-            </a>
+    <!-- Top Nav -->
+    <div id="tableNav" class="flex gap-4 bg-gray-100 p-4">
+        {{#each tables}}
+            <button data-table="{{this}}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">{{this}}</button>
+        {{/each}}
+    </div>
 
-            <a href="/adminDashboard">
-                <div class="relative group inline-block cursor-pointer text-white border-[1px] border-logo-navy hover:border-custom-gold p-[10px]">
-                    Accounts
-                </div>
-            </a>
+    <!-- Search Form -->
+    <form id="tableSearchForm" class="flex gap-2 p-4">
+        <input type="text" id="tableSearchInput" name="search" placeholder="Search..." class="border px-2 py-1 rounded w-64">
+        <button type="submit" class="bg-logo-navy text-white px-4 py-1 rounded">Search</button>
+    </form>
 
-            <a href="/adminDashboard">
-                <div class="relative group inline-block cursor-pointer text-white border-[1px] border-logo-navy hover:border-custom-gold p-[10px]">
-                    Create User
-                </div>
-            </a>
+    <!-- Add row button  -->
 
-            <a href="/" class="text-white">Log off</a>
-        </div>
+    <!-- Table Container -->
+    <div class="overflow-x-auto shadow-md rounded-lg p-4">
+        <div id="tableContainer"></div>
+    </div>
+
+    <!-- Load More Button -->
+    <div class="flex justify-center mt-4 mb-4">
+        <button id="loadMoreBtn" class="bg-logo-navy hover:bg-logo-navy-hover text-white px-6 py-2 rounded-lg shadow-md">Load More</button>
     </div>
 </div>
+
+{{> footer }}

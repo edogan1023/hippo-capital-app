@@ -25,11 +25,10 @@ import session from 'express-session';
 hbs.registerPartials(path.join(__dirname, 'views/partials'));
 
 app.use(session({
-  secret: '',
+  secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true
 }));
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

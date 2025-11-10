@@ -17,6 +17,7 @@
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-blue-50: oklch(97% 0.014 254.604);
     --color-blue-200: oklch(88.2% 0.059 254.128);
+    --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
     --color-blue-700: oklch(48.8% 0.243 264.376);
     --color-gray-50: oklch(98.5% 0.002 247.839);
@@ -293,6 +294,9 @@
   .col-span-4 {
     grid-column: span 4 / span 4;
   }
+  .m-4 {
+    margin: calc(var(--spacing) * 4);
+  }
   .m-\[5px\] {
     margin: 5px;
   }
@@ -338,15 +342,6 @@
   .mt-\[105px\] {
     margin-top: 105px;
   }
-  .mt-\[110px\] {
-    margin-top: 110px;
-  }
-  .mt-\[125px\] {
-    margin-top: 125px;
-  }
-  .mt-\[150px\] {
-    margin-top: 150px;
-  }
   .mr-30 {
     margin-right: calc(var(--spacing) * 30);
   }
@@ -367,6 +362,9 @@
   }
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
+  }
+  .mb-3 {
+    margin-bottom: calc(var(--spacing) * 3);
   }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
@@ -403,6 +401,9 @@
   }
   .ml-\[90px\] {
     margin-left: 90px;
+  }
+  .ml-\[180px\] {
+    margin-left: 180px;
   }
   .ml-\[200px\] {
     margin-left: 200px;
@@ -470,6 +471,9 @@
   .h-screen {
     height: 100vh;
   }
+  .max-h-\[70vh\] {
+    max-height: 70vh;
+  }
   .max-h-\[200px\] {
     max-height: 200px;
   }
@@ -508,6 +512,9 @@
   }
   .w-11 {
     width: calc(var(--spacing) * 11);
+  }
+  .w-11\/12 {
+    width: calc(11/12 * 100%);
   }
   .w-27 {
     width: calc(var(--spacing) * 27);
@@ -756,6 +763,9 @@
   .justify-center-safe {
     justify-content: safe center;
   }
+  .justify-end {
+    justify-content: flex-end;
+  }
   .justify-items-center {
     justify-items: center;
   }
@@ -770,9 +780,6 @@
   }
   .gap-8 {
     gap: calc(var(--spacing) * 8);
-  }
-  .gap-10 {
-    gap: calc(var(--spacing) * 10);
   }
   .gap-12 {
     gap: calc(var(--spacing) * 12);
@@ -832,6 +839,9 @@
   .overflow-x-auto {
     overflow-x: auto;
   }
+  .overflow-y-auto {
+    overflow-y: auto;
+  }
   .rounded {
     border-radius: 0.25rem;
   }
@@ -881,6 +891,9 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
+  .border-black {
+    border-color: var(--color-black);
+  }
   .border-blue-200 {
     border-color: var(--color-blue-200);
   }
@@ -911,6 +924,9 @@
   .bg-blue-50 {
     background-color: var(--color-blue-50);
   }
+  .bg-blue-500 {
+    background-color: var(--color-blue-500);
+  }
   .bg-blue-600 {
     background-color: var(--color-blue-600);
   }
@@ -932,6 +948,9 @@
   .bg-green-400 {
     background-color: var(--color-green-400);
   }
+  .bg-green-500 {
+    background-color: var(--color-green-500);
+  }
   .bg-green-600 {
     background-color: var(--color-green-600);
   }
@@ -940,6 +959,9 @@
   }
   .bg-logo-navy-hover {
     background-color: var(--color-logo-navy-hover);
+  }
+  .bg-red-500 {
+    background-color: var(--color-red-500);
   }
   .bg-red-600 {
     background-color: var(--color-red-600);
@@ -1015,12 +1037,6 @@
   }
   .py-16 {
     padding-block: calc(var(--spacing) * 16);
-  }
-  .py-18 {
-    padding-block: calc(var(--spacing) * 18);
-  }
-  .py-20 {
-    padding-block: calc(var(--spacing) * 20);
   }
   .py-24 {
     padding-block: calc(var(--spacing) * 24);
@@ -1360,6 +1376,13 @@
       }
     }
   }
+  .hover\:bg-blue-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-blue-600);
+      }
+    }
+  }
   .hover\:bg-blue-700 {
     &:hover {
       @media (hover: hover) {
@@ -1381,10 +1404,24 @@
       }
     }
   }
+  .hover\:bg-gray-400 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-400);
+      }
+    }
+  }
   .hover\:bg-green-500 {
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-green-500);
+      }
+    }
+  }
+  .hover\:bg-green-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-green-600);
       }
     }
   }
@@ -1406,6 +1443,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-logo-navy-hover);
+      }
+    }
+  }
+  .hover\:bg-red-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-600);
       }
     }
   }

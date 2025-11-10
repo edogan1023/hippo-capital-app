@@ -1,8 +1,6 @@
 import express from 'express';
 import { getUserById } from '../services/loginService.js';
-import session from "express-session";
 import dbPool from "../services/database.js";
-import {generateImageFromCompany} from "../services/imageGeneration.js";
 
 const router = express.Router();
 
@@ -33,7 +31,6 @@ router.get('/', async function(req, res, next) {
         console.error('Error fetching user data:', error);
         return next(error);
     }});
-
 
 router.get('/cashback', async function(req, res, next){
     try {
@@ -179,28 +176,128 @@ router.post('/transfer/submit', async function(req, res, next){
     }
 });
 
-
 router.get('/accounts', async function(req, res, next){
     try {
-
         if (!req.cookies.userId) {
-            // User is not logged in, redirect to login
+            return res.redirect('/login');
+        }
+        const userId = req.cookies.userId;
+        console.log("Cookie userId:", userId);
+
+        // Fetch all active accounts linked to the user using JOIN
+        const sql = `
+            SELECT a.account_number, a.balance, a.account_type, a.account_sub_type
+            FROM account a
+            JOIN account_user au ON a.account_number = au.account_number
+            WHERE au.user_id = ? AND a.is_active = 1
+            ORDER BY a.account_number ASC
+        `;
+        const [rows] = await dbPool.execute(sql, [userId]);
+
+        console.log('accounts retrieved:', rows.length);
+        res.render('accounts', { account: rows });
+
+    } catch (error) {
+        console.error('Error fetching accounts:', error);
+        next(error);
+    }
+});
+
+router.get('/accounts/accountInfo/:accountNumber', async function (req, res, next) {
+    try {
+        if (!req.cookies.userId) {
             return res.redirect('/login');
         }
 
         const userId = req.cookies.userId;
-        console.log("Cookie userId:", req.cookies.userId);
-        const sql = 'SELECT account_number , balance , account_type , account_sub_type FROM account WHERE user_id = ? AND is_active = 1 ORDER BY account_number ASC';
-        const [rows, fields] = await dbPool.execute(sql, [userId]);
-        // Using execute method with connection pool for better performance
+        const accountNumber = parseInt(req.params.accountNumber);
 
-        console.log('accounts retrieved:', rows.length);
+        // Pagination & search
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 20;
+        const searchInput = req.query.search ? req.query.search.trim() : '';
+        const search = searchInput ? `%${searchInput}%` : '%';
+        const dateFrom = req.query.dateFrom || null;
+        const dateTo = req.query.dateTo || null;
 
-        res.render('accounts', { account: rows });
+        // --- Account details with JOIN to verify access
+        const accountSql = `
+            SELECT a.account_number, a.balance, a.account_type, a.account_sub_type, a.date_opened,
+                   a.interest_rate_credit, a.interest_rate_debit, a.overdraft_limit, a.is_active
+            FROM account a
+                     JOIN account_user au ON a.account_number = au.account_number
+            WHERE a.account_number = ? AND au.user_id = ? AND a.is_active = 1
+        `;
+        const [accountRows] = await dbPool.execute(accountSql, [accountNumber, userId]);
+
+        if (!accountRows.length) {
+            return res.status(404).send("Account not found or inaccessible.");
+        }
+
+        // --- Linked users for this account
+        const usersSql = `
+            SELECT u.id, u.first_name, u.middle_name, u.surname, au.role
+            FROM account_user au
+                     JOIN user u ON au.user_id = u.id
+            WHERE au.account_number = ?
+            ORDER BY au.role ASC
+        `;
+        const [usersRows] = await dbPool.execute(usersSql, [accountNumber]);
+
+        // --- Transactions with filters
+        let txSql = `
+            SELECT amount, date_time, description, type, running_balance,
+                   sender_account_number, recipient_account_number, transaction_success,
+                   CASE
+                       WHEN sender_account_number = ? THEN 'Outward'
+                       WHEN recipient_account_number = ? THEN 'Inward'
+                       END AS flow_direction
+            FROM transaction
+            WHERE ((sender_account_number = ? AND direction = 'out') OR
+                   (recipient_account_number = ? AND direction = 'in'))
+              AND transaction_success = 'success'
+        `;
+        const txParams = [
+            accountNumber, // CASE sender
+            accountNumber, // CASE recipient
+            accountNumber, // WHERE sender
+            accountNumber  // WHERE recipient
+        ];
+
+        if (searchInput) {
+            txSql += " AND (description LIKE ? OR type LIKE ?)";
+            txParams.push(search, search);
+        }
+
+        if (dateFrom && dateTo) {
+            txSql += " AND DATE(date_time) >= ? AND DATE(date_time) <= ?";
+            txParams.push(dateFrom, dateTo);
+        }
+
+        // --- Count total for pagination
+        let countSql = txSql.replace(/ORDER BY.*$/i, '');
+        countSql = countSql.replace(/LIMIT.*OFFSET.*$/i, '');
+        const [countRows] = await dbPool.execute(`SELECT COUNT(*) as total FROM (${countSql}) AS sub`, txParams);
+        const total = countRows[0].total;
+
+        // --- Apply pagination
+        txSql += ` ORDER BY date_time DESC LIMIT ${limit} OFFSET ${offset}`;
+        const [transactionRows] = await dbPool.query(txSql, txParams);
+
+        // --- Respond JSON for AJAX
+        if (req.headers.accept && req.headers.accept.includes("application/json")) {
+            return res.json({ rows: transactionRows, total });
+        }
+
+        // --- Render normal page
+        res.render('accountInfo', {
+            account: accountRows[0],
+            account_user: usersRows,
+            transaction: transactionRows
+        });
+
     } catch (error) {
-        console.error('Error fetching accounts:', error);
-
-        // Pass error to Express error handler
+        console.error('Error fetching account data or transactions:', error);
         next(error);
     }
 });
@@ -314,6 +411,9 @@ router.post('/accounts/userCreateAccount/submit', async (req, res, next) => {
     }
 });
 
+
+
+
 router.get('/loans', async function(req, res, next){
     try {
 
@@ -339,7 +439,6 @@ router.get('/loans', async function(req, res, next){
         next(error);
     }
 });
-
 
 router.get('/loans/pendingLoans', async function(req, res, next){
     try {
@@ -371,7 +470,6 @@ router.get('/loans/pendingLoans', async function(req, res, next){
     }
 });
 
-
 router.get('/loans/:userId/loanApplication', async (req, res, next) => {
     try {
         if (!req.cookies.userId) return res.redirect('/login');
@@ -395,7 +493,6 @@ router.get('/loans/:userId/loanApplication', async (req, res, next) => {
         next(err);
     }
 });
-
 
 router.get('/loans/loansInfo/:loanNumber', async function (req, res, next) {
     try {
@@ -447,107 +544,5 @@ router.get('/loans/loansInfo/:loanNumber', async function (req, res, next) {
 });
 
 
-router.get('/accounts/accountInfo/:accountNumber', async function (req, res, next) {
-    try {
-        if (!req.cookies.userId) {
-            return res.redirect('/login');
-        }
-
-        const userId = req.cookies.userId;
-        const accountNumber = parseInt(req.params.accountNumber);
-
-        // Pagination & search
-        const offset = parseInt(req.query.offset) || 0;
-        const limit = parseInt(req.query.limit) || 20;
-        const searchInput = req.query.search ? req.query.search.trim() : '';
-        const search = searchInput ? `%${searchInput}%` : '%';
-        const dateFrom = req.query.dateFrom || null;
-        const dateTo = req.query.dateTo || null;
-
-        // --- account info
-        const accountSql = `
-            SELECT account_number, balance, account_type, account_sub_type, date_opened,
-                   interest_rate_credit, interest_rate_debit, overdraft_limit, is_active
-            FROM account
-            WHERE user_id = ? AND account_number = ? AND is_active = 1
-            ORDER BY account_number ASC
-        `;
-        const [accountRows] = await dbPool.execute(accountSql, [userId, accountNumber]);
-
-        if (!accountRows.length) {
-            return res.status(404).send("Account not found or inactive.");
-        }
-
-        // --- linked users
-        const usersSql = `
-            SELECT user.id, user.first_name, user.middle_name, user.surname, account_user.role
-            FROM account_user
-                     JOIN user ON account_user.user_id = user.id
-            WHERE account_user.account_number = ?
-            ORDER BY account_user.role ASC
-        `;
-        const [usersRows] = await dbPool.execute(usersSql, [accountNumber]);
-
-        // --- transactions with filters
-        let txSql = `
-            SELECT amount, date_time, description, type, running_balance,
-                   sender_account_number, recipient_account_number, transaction_success,
-                   CASE
-                       WHEN sender_account_number = ? THEN 'Outward'
-                       WHEN recipient_account_number = ? THEN 'Inward'
-                       END AS flow_direction
-            FROM transaction
-            WHERE (( ( sender_account_number = ? AND direction = 'out') OR (recipient_account_number = ? AND direction = 'in') )) AND (transaction_success = 'success')
-        `;
-
-        const txParams = [
-            accountNumber, // CASE sender
-            accountNumber, // CASE recipient
-            accountNumber, // WHERE sender
-            accountNumber  // WHERE recipient
-        ];
-
-        // Only add search filter if search input is not empty
-        if (searchInput) {
-            txSql += " AND (description LIKE ? OR type LIKE ?)";
-            txParams.push(search, search);
-        }
-
-        // Date filter (inclusive)
-        if (dateFrom && dateTo) {
-            txSql += " AND DATE(date_time) >= ? AND DATE(date_time) <= ?";
-            txParams.push(dateFrom, dateTo);
-        }
-
-        // Count total for pagination
-        const [countRows] = await dbPool.execute(
-            `SELECT COUNT(*) as total FROM (${txSql}) AS sub`,
-            txParams
-        );
-        const total = countRows[0].total;
-
-        // Apply pagination
-        txSql += " ORDER BY date_time DESC LIMIT ? OFFSET ?";
-        txParams.push(limit, offset);
-
-        const [transactionRows] = await dbPool.execute(txSql, txParams);
-
-        // JSON for AJAX
-        if (req.headers.accept && req.headers.accept.includes("application/json")) {
-            return res.json({ rows: transactionRows, total });
-        }
-
-        // Normal page render
-        res.render('accountInfo', {
-            account: accountRows[0],
-            account_user: usersRows,
-            transaction: transactionRows
-        });
-
-    } catch (error) {
-        console.error('Error fetching account data or transactions:', error);
-        next(error);
-    }
-});
 
 export default router;
